@@ -3,18 +3,21 @@
     <h1>Register</h1>
     <input type="email" v-model="email" name="email" placeholder="email" />
     <input type="password" v-model="password" name="password" placeholder="password" />
+    <br>
+    <div class="error" v-html="error"></div>
     <button @click="register">Register</button>
   </div>
 </template>
 
 <script>
-import AuthenticationService from '@/services/AuthenticationService'
+  import AuthenticationService from '@/services/AuthenticationService';
   export default {
     data() {
       return {
-        email: "kamilmatnoor@gmail.com",
-        password: "123456"
-      }
+        email: 'kamilmatnoor@gmail.com',
+        password: '123456',
+        error: null
+      };
     },
     // watch: {
     //   email(value) {
@@ -23,10 +26,15 @@ import AuthenticationService from '@/services/AuthenticationService'
     // },
     methods: {
       async register() {
-        await AuthenticationService.register({
-          email: this.email,
-          password: this.password
-        })
+        try {
+          await AuthenticationService.register({
+            email: this.email,
+            password: this.password
+          });
+        } catch (error) {
+          this.error = error.response.data.error
+        }
+  
       }
     }
     // mounted() {
@@ -34,8 +42,12 @@ import AuthenticationService from '@/services/AuthenticationService'
     //     this.email = "Hello World"
     //   }, 2000)
     // }
-  }
+  };
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped</style>
+<style scoped>
+  .error {
+    color: red;
+  }
+</style>
